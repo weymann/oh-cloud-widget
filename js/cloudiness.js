@@ -93,7 +93,7 @@ angular.module("app", ["chart.js"]).controller("LineCtrl", function ($scope) {
             type: 'linear',
             display: true,
             position: 'right',
-            ticks : { beginAtZero : true, max: 20 }
+            ticks : { beginAtZero : true }
           }
         ]
       }
