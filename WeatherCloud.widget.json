@@ -2,6 +2,38 @@
     "settings": [
         {
             "type": "item",
+            "id": "Day0Date"
+        },
+        {
+            "type": "item",
+            "id": "Day1Date"
+        },
+        {
+            "type": "item",
+            "id": "Day2Date"
+        },
+        {
+            "type": "item",
+            "id": "Day3Date"
+        },
+        {
+            "type": "item",
+            "id": "Day4Date"
+        },
+        {
+            "type": "item",
+            "id": "Day5Date"
+        },
+        {
+            "type": "item",
+            "id": "Day6Date"
+        },
+        {
+            "type": "item",
+            "id": "Day7Date"
+        },
+        {
+            "type": "item",
             "id": "Day0CloudForecast"
         },
         {
@@ -31,7 +63,39 @@
         {
             "type": "item",
             "id": "Day7CloudForecast"
+        },        {
+            "type": "item",
+            "id": "Day0Rainfall"
+        },
+        {
+            "type": "item",
+            "id": "Day1Rainfall"
+        },
+        {
+            "type": "item",
+            "id": "Day2Rainfall"
+        },
+        {
+            "type": "item",
+            "id": "Day3Rainfall"
+        },
+        {
+            "type": "item",
+            "id": "Day4Rainfall"
+        },
+        {
+            "type": "item",
+            "id": "Day5Rainfall"
+        },
+        {
+            "type": "item",
+            "id": "Day6Rainfall"
+        },
+        {
+            "type": "item",
+            "id": "Day7Rainfall"
         }
+
     ],
     "template": "<div oc-lazy-load=\"'/static/js/Chart.bundle.min.js'\">\n\t<div oc-lazy-load=\"'/static/js/angular-chart.min.js'\" >\n\t\t<div oc-lazy-load=\"'/static/js/cloudiness.js'\" >\n      <div ng-controller=\"LineCtrl\">\n\t\t\t\tWolken Vorhersage {{itemValue(config.Day0)}}\n        <canvas id=\"line\" class=\"chart chart-line\" chart-data=\"data\" chart-labels=\"labels\" chart-series=\"series\" chart-options=\"options\" chart-dataset-override=\"datasetOverride\" chart-click=\"onClick\">\n        </canvas>\n\t\t  <div>\n\t  <div>\n  <div>\n</div>\n",
     "name": "Weather & Clouds",
