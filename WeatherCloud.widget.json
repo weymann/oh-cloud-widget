@@ -1,0 +1,40 @@
+{
+    "settings": [
+        {
+            "type": "item",
+            "id": "Day0CloudForecast"
+        },
+        {
+            "type": "item",
+            "id": "Day1CloudForecast"
+        },
+        {
+            "type": "item",
+            "id": "Day2CloudForecast"
+        },
+        {
+            "type": "item",
+            "id": "Day3CloudForecast"
+        },
+        {
+            "type": "item",
+            "id": "Day4CloudForecast"
+        },
+        {
+            "type": "item",
+            "id": "Day5CloudForecast"
+        },
+        {
+            "type": "item",
+            "id": "Day6CloudForecast"
+        },
+        {
+            "type": "item",
+            "id": "Day7CloudForecast"
+        }
+    ],
+    "template": "<div oc-lazy-load=\"'/static/js/Chart.bundle.min.js'\">\n\t<div oc-lazy-load=\"'/static/js/angular-chart.min.js'\" >\n\t\t<div oc-lazy-load=\"'/static/js/cloudiness.js'\" >\n      <div ng-controller=\"LineCtrl\">\n\t\t\t\tWolken Vorhersage {{itemValue(config.Day0)}}\n        <canvas id=\"line\" class=\"chart chart-line\" chart-data=\"data\" chart-labels=\"labels\" chart-series=\"series\" chart-options=\"options\" chart-dataset-override=\"datasetOverride\" chart-click=\"onClick\">\n        </canvas>\n\t\t  <div>\n\t  <div>\n  <div>\n</div>\n",
+    "name": "Weather & Clouds",
+    "author": "Bernd Weymann",
+    "description": "Widget shows cloud cover for the next 7 days in order. Check with this widget e.g. if your electric car needs a charge before the next days the sky is covered with clouds."
+}
