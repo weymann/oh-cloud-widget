@@ -60,7 +60,7 @@ angular.module("app", ["chart.js"]).controller("LineCtrl", function ($scope) {
   
 
     $scope.series = ['Bewoelkung', 'Niederschlag'];
-    $scope.colors = [ '#878787','#45b7cd', '#ff8e72'];
+    $scope.colors = [ '#878787', '#007fff','#45b7cd'];
     $scope.datasetOverride = [
       {
         label: "Bewoelkung",
