@@ -1,106 +1,114 @@
-angular.module("app", ["chart.js"]).controller("LineCtrl", function ($scope) {
-  // console.log("Config: "+$scope.itemValue($scope.config.Day0)  )
+// https://mattslocum.github.io/ng-webworker/demo/
+angular.module("app", ["chart.js"]).controller("LineCtrl", function ($scope, $http) {
 
-  var forecastArray = [["","","","","","","",""],["","","","","","","",""]];
-  $scope.labels = ["Heute", "Morgen", "2", "3", "4", "5", "6", "7"];
-  $scope.data = [
-    [10, 0, 0, 0, 20, 0, 0, 0],
-    [2, 0, 0, 0, 5, 0, 0, 0]
-  ];
-  if (typeof $scope.config !== 'undefined') {
-    $scope.labels[2] = $scope.itemValue($scope.config.Day2Date).substring(0,10)
-    $scope.labels[3] = $scope.itemValue($scope.config.Day3Date).substring(0,10)
-    $scope.labels[4] = $scope.itemValue($scope.config.Day4Date).substring(0,10)
-    $scope.labels[5] = $scope.itemValue($scope.config.Day5Date).substring(0,10)
-    $scope.labels[6] = $scope.itemValue($scope.config.Day6Date).substring(0,10)
-    $scope.labels[7] = $scope.itemValue($scope.config.Day7Date).substring(0,10)
-    
-    forecastArray[0][0] = $scope.itemValue($scope.config.Day0CloudForecast)
-    forecastArray[0][1] = $scope.itemValue($scope.config.Day1CloudForecast)
-    forecastArray[0][2] = $scope.itemValue($scope.config.Day2CloudForecast)
-    forecastArray[0][3] = $scope.itemValue($scope.config.Day3CloudForecast)
-    forecastArray[0][4] = $scope.itemValue($scope.config.Day4CloudForecast)
-    forecastArray[0][5] = $scope.itemValue($scope.config.Day5CloudForecast)
-    forecastArray[0][6] = $scope.itemValue($scope.config.Day6CloudForecast)
-    forecastArray[0][7] = $scope.itemValue($scope.config.Day7CloudForecast)
-
-    forecastArray[1][0] = $scope.itemValue($scope.config.Day0Rainfall)
-    forecastArray[1][1] = $scope.itemValue($scope.config.Day1Rainfall)
-    forecastArray[1][2] = $scope.itemValue($scope.config.Day2Rainfall)
-    forecastArray[1][3] = $scope.itemValue($scope.config.Day3Rainfall)
-    forecastArray[1][4] = $scope.itemValue($scope.config.Day4Rainfall)
-    forecastArray[1][5] = $scope.itemValue($scope.config.Day5Rainfall)
-    forecastArray[1][6] = $scope.itemValue($scope.config.Day6Rainfall)
-    forecastArray[1][7] = $scope.itemValue($scope.config.Day7Rainfall)
-
-    var i;
-    for (i = 0; i < 8; i++) {
-      var str = forecastArray[0][i]
-      var split = str.split(" ");
-      if(split[0] != "N/A") {
-          var floatVal = parseFloat(split[0]).toFixed(1)
-          console.log("Number " + floatVal)   
-          $scope.data[0][i] = floatVal 
-      } else {
-       console.log("found N/A")
-      }
-
-      var str = forecastArray[1][i]
-      var split = str.split(" ");
-      if(split[0] != "N/A") {
-          var floatVal = parseFloat(split[0]).toFixed(5)
-          console.log("Number " + floatVal * 100)   
-          $scope.data[1][i] = (floatVal * 100).toFixed(1)
-      } else {
-       console.log("found N/A")
-      }
-
+  $scope.series = ['Bewoelkung', 'Niederschlag'];
+  $scope.colors = ['#878787', '#007fff', '#45b7cd'];
+  $scope.datasetOverride = [
+    {
+      label: "Bewoelkung",
+      borderWidth: 3,
+      hoverBackgroundColor: "rgba(255,99,132,0.4)",
+      hoverBorderColor: "rgba(255,99,132,1)",
+      type: 'line',
+      yAxisID: 'y-axis-1'
+    },
+    {
+      label: "Niederschlag",
+      borderWidth: 1,
+      type: 'bar',
+      yAxisID: 'y-axis-2'
     }
-  }
-  
+  ];
 
-    $scope.series = ['Bewoelkung', 'Niederschlag'];
-    $scope.colors = [ '#878787', '#007fff','#45b7cd'];
-    $scope.datasetOverride = [
-      {
-        label: "Bewoelkung",
-        borderWidth: 3,
-        hoverBackgroundColor: "rgba(255,99,132,0.4)",
-        hoverBorderColor: "rgba(255,99,132,1)",
-        type: 'line',
-        yAxisID: 'y-axis-1'
-      },
-      {
-        label: "Niederschlag",
-        borderWidth: 1,
-        type: 'bar',
-        yAxisID: 'y-axis-2'
-      }
-    ];
-    
-    $scope.options = {
-      scales: {
-        yAxes: [
-          {
-            id: 'y-axis-1',
-            type: 'linear',
-            display: true,
-            position: 'left',
-            ticks : { beginAtZero : true, max:100 }
-          },
-          {
-            id: 'y-axis-2',
-            type: 'linear',
-            display: true,
-            position: 'right',
-            ticks : { beginAtZero : true }
-          }
-        ]
+  $scope.options = {
+    scales: {
+      yAxes: [
+        {
+          id: 'y-axis-1',
+          type: 'linear',
+          display: true,
+          position: 'left',
+          ticks: { beginAtZero: true, max: 100 }
+        },
+        {
+          id: 'y-axis-2',
+          type: 'linear',
+          display: true,
+          position: 'right',
+          ticks: { beginAtZero: true }
+        }
+      ]
+    }
+  };
+
+  $scope.config.appid = "7c82a05c28361abc8ab90b9f0faf18fa";
+  $scope.config.latitude = 50.555969;
+  $scope.config.longtitude = 8.495388;
+
+
+  var myWorker = new Worker("../static/js/doubler.js");
+
+  myWorker.onmessage = function (oEvent) {
+    console.log("Schedule")
+    getForecastData()
+    sleep(60 * 60 * 1000).then(() => {
+      console.log("timeout - new schedule")
+      myWorker.postMessage(2);
+    });
+  };
+
+  myWorker.postMessage(2); // start the worker.
+
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  function getForecastData() {
+    // http://api.openweathermap.org/data/2.5/forecast?q=Wetzlar&appid=7c82a05c28361abc8ab90b9f0faf18fa&units=metric&lang=de
+    var query = "https://api.openweathermap.org/data/2.5/forecast?lat=" + $scope.config.latitude + "&lon="
+      + $scope.config.longtitude + "&appid=" + $scope.config.appid + "&units=metric&lang=de";
+    var data = {};
+    var config = {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
       }
     };
+    console.log("Call API")
+    $http.post(query, data, config)
+      .then(function successCallback(response) {
+        console.log("Get forecast success");
+        console.log(response.data);
+        calculateForecastData(response.data);
+        return "OK"
+      }, function errorCallback(response) {
+        console.log("Get balance: Failure");
+        console.log("Status " + response.status + ": " + response.statusText);
+        return "NOK"
+      });
+    console.log("Called API")
+  }
+
+  function calculateForecastData(data) {
+    var dailyForecastArray = data.list;
+    var cloudForecastArray = new Array();
+    var rainForecastArray = new Array();
+    var labelArray = new Array();
+    for (let index = 0; index < dailyForecastArray.length; index++) {
+      var element = dailyForecastArray[index];
+      var d = new Date(element.dt * 1000);
+      cloudForecastArray[index] = element.clouds.all
+
+      rainForecastArray[index] = 0;
+      var rain = element.rain
+      if(rain != null) {
+        rainForecastArray[index] = element.rain["3h"]
+      }
+      labelArray[index] = d.getHours()
+      console.log(d + " : " + element.clouds.all);
+    }
+    $scope.data = [cloudForecastArray, rainForecastArray]
+    $scope.labels = labelArray
+    console.log($scope.data);
+  }
 
 });
-
-/**
- * GET https://api.darksky.net/forecast/f36af303a886531740e1f57fae872842/50.5562,8.4944
- */
