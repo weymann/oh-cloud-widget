@@ -41,12 +41,8 @@ angular.module("app", ["chart.js"]).controller("LineCtrl", function ($scope, $ht
     }
   };
 
-  $scope.config.appid = "7c82a05c28361abc8ab90b9f0faf18fa";
-  $scope.config.latitude = 50.555969;
-  $scope.config.longtitude = 8.495388;
 
-
-  var myWorker = new Worker("../static/js/doubler.js");
+  var myWorker = new Worker("../static/js/update.js");
 
   myWorker.onmessage = function (oEvent) {
     console.log("Schedule")
@@ -64,9 +60,13 @@ angular.module("app", ["chart.js"]).controller("LineCtrl", function ($scope, $ht
   }
 
   function getForecastData() {
+    var query = "https://api.openweathermap.org/data/2.5/forecast?units=metric&lang=de&appid=" + $scope.config.appid;
+    if ($scope.config.city != null) {
+      query += "&q=" + $scope.config.city;
+    } else {
+      query += "?lat=" + $scope.config.latitude + "&lon=" + $scope.config.longtitude;
+    }
     // http://api.openweathermap.org/data/2.5/forecast?q=Wetzlar&appid=7c82a05c28361abc8ab90b9f0faf18fa&units=metric&lang=de
-    var query = "https://api.openweathermap.org/data/2.5/forecast?lat=" + $scope.config.latitude + "&lon="
-      + $scope.config.longtitude + "&appid=" + $scope.config.appid + "&units=metric&lang=de";
     var data = {};
     var config = {
       headers: {
@@ -100,7 +100,7 @@ angular.module("app", ["chart.js"]).controller("LineCtrl", function ($scope, $ht
 
       rainForecastArray[index] = 0;
       var rain = element.rain
-      if(rain != null) {
+      if (rain != null) {
         rainForecastArray[index] = element.rain["3h"]
       }
       labelArray[index] = d.getHours()

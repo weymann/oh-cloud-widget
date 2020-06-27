@@ -1,3 +1,3 @@
 self.onmessage = function (oEvent) {
-    self.postMessage(oEvent.data * 2);
+    self.postMessage(oEvent.data );
 };
