@@ -73,7 +73,7 @@ angular.module("app", ["chart.js"]).controller("LineCtrl", function ($scope, $ht
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
       }
     };
-    console.log("Call API")
+    console.log("Query "+query)
     $http.post(query, data, config)
       .then(function successCallback(response) {
         console.log("Get forecast success");
